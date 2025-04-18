@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
-    "dev": "ts-node src/server.ts"
+    "dev": "ts-node src/server.ts",
+    "docker-build": "docker build -f Dockerfile -t backend:latest ."
   },
   "keywords": [],
   "author": "",
@@ -27,6 +28,7 @@
   },
   "dependencies": {
     "@types/morgan": "^1.9.9",
+    "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "express": "^5.1.0",
