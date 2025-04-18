@@ -1,20 +1,7 @@
-import { Model, DataTypes, Optional } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/db.config";
 
-interface UserAttributes {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
-  isAdmin: boolean;
-  isDoctor: boolean;
-  notification: any[];
-  seenNotification: any[];
-}
-
-interface UserCreationAttributes extends Optional<UserAttributes, "id" | "isAdmin" | "isDoctor" | "notification" | "seenNotification"> {}
-
-export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+export class User extends Model {
   public id!: number;
   public name!: string;
   public email!: string;
@@ -65,7 +52,5 @@ User.init(
   {
     sequelize,
     modelName: "User",
-    tableName: "users",
-    timestamps: true,
   }
 );

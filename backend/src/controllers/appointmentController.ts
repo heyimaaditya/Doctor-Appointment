@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { Appointment } from "../models/Appointment";
 import { User } from "../models/User";
-import { Op } from "sequelize";
+import { Doctor } from "../models/Doctor";
 
 export const bookAppointmentController = async (req: Request, res: Response) => {
   try {
-    const appointmentData = { ...req.body, status: "pending" };
-    const newAppointment = await Appointment.create(appointmentData);
+    req.body.status = "pending";
+    const newAppointment = await Appointment.create(req.body);
     const user = await User.findByPk(req.body.doctorInfo.userId);
     if (user) {
       const notification = user.notification || [];
@@ -15,7 +15,7 @@ export const bookAppointmentController = async (req: Request, res: Response) => 
         message: `A new Appointment Request from ${req.body.userInfo.name}`,
         onClickPath: "/user/appointments",
       });
-      await user.update({ notification });
+      await User.update({ notification }, { where: { id: user.id } });
     }
     res.status(200).json({
       success: true,
@@ -23,59 +23,44 @@ export const bookAppointmentController = async (req: Request, res: Response) => 
       data: newAppointment,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      message: "Error while booking appointment",
-      error,
-    });
+    res.status(500).json({ success: false, message: "Error while booking appointment", error });
   }
 };
 
-export const bookingAvailabilityController = async (req: Request, res: Response) => {
+export const bookingAvailabilityController = async (req: Request, res: Response):Promise<void> => {
   try {
     const { doctorId, date, officeTime } = req.body;
     const appointments = await Appointment.findAll({
-      where: {
-        doctorId,
-        date,
-        officeTime,
-      },
+      where: { doctorId, date, officeTime },
     });
     if (appointments.length > 0) {
-      return res.status(200).json({
-        success: true,
+      res.status(200).json({
         message: "Appointments not available at this time",
+        success: true,
       });
+      return;
     }
     res.status(200).json({
-      success: true,
       message: "Appointments available",
+      success: true,
     });
+    return;
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      message: "Error in booking availability",
-      error,
-    });
+    res.status(500).json({ success: false, message: "Error in booking availability", error });
   }
 };
 
 export const userAppointmentsController = async (req: Request, res: Response) => {
   try {
-    const appointments = await Appointment.findAll({ where: { userId: req.body.userId } });
+    const appointments = await Appointment.findAll({
+      where: { userId: req.body.userId },
+    });
     res.status(200).json({
       success: true,
       message: "User appointments fetched successfully",
       data: appointments,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      message: "Error in user appointments",
-      error,
-    });
+    res.status(500).json({ success: false, message: "Error in user appointments", error });
   }
 };

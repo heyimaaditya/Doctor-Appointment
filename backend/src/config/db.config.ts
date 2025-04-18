@@ -1,6 +1,5 @@
 import {Sequelize} from "sequelize";
 import * as dotenv from "dotenv";
-//import sequelize from 'sequelize';
 dotenv.config();
 const sequelize = new Sequelize(
     process.env.DB_NAME || "doctor_appointment",

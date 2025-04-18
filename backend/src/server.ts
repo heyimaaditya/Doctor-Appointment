@@ -4,6 +4,9 @@ import morgan from "morgan";
 import * as dotenv from "dotenv";
 import sequelize from "./config/db.config";
 import userRoutes from "./routes/userRoutes";
+import doctorRoutes from "./routes/doctorRoutes";
+import appointmentRoutes from "./routes/appointmentRoutes";
+import adminRoutes from "./routes/adminRoutes";
 
 dotenv.config();
 
@@ -14,6 +17,9 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/doctor", doctorRoutes);
+app.use("/api/v1/appointment", appointmentRoutes);
+app.use("/api/v1/admin", adminRoutes);
 
 const PORT = process.env.PORT || 4000;
 

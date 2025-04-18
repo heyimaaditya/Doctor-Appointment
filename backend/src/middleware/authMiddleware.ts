@@ -1,27 +1,34 @@
-import { Request, Response, NextFunction } from "express";
+import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 
-interface JwtPayload {
-  id: number;
-}
-
-export const authMiddleware = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+export const authMiddleware: RequestHandler = (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
+    const authHeader = req.headers.authorization;
+
+    // 1️⃣ No token at all
+    if (!authHeader) {
       res.status(401).json({ message: "No token provided", success: false });
-      return;
+      return;          // ← early‑exit, *without* returning a Response
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret") as JwtPayload;
-    req.body.userId = decoded.id;
-    next();
+    const token = authHeader.split(" ")[1];
+
+    // 2️⃣ Verify token (callback form to keep it sync‑ish)
+    jwt.verify(
+      token,
+      process.env.JWT_SECRET as string,
+      (err, decoded: any) => {
+        if (err) {
+          res.status(401).json({ message: "Invalid token", success: false });
+          return;
+        }
+
+        // 3️⃣ Attach user id for downstream handlers
+        req.body.userId = decoded.id;
+        next();         // let the request continue
+      }
+    );
   } catch (error) {
     res.status(401).json({ message: "Authorization failed", success: false });
   }
 };
-
