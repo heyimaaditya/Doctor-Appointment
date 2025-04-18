@@ -1,1 +1,59 @@
-<p>default-layout works!</p>
+<nz-layout class="app-layout">
+    <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null" nzTheme="dark">
+      <div class="sidebar-logo">
+        <a routerLink="/">
+          <img src="assets/logo.svg" alt="logo"> <h1 *ngIf="!isCollapsed">Doctor App</h1>
+        </a>
+      </div>
+      <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+        <li nz-menu-item *ngFor="let item of sideMenu" [nzSelected]="item.active" [routerLink]="item.path">
+          <span nz-icon [nzType]="item.icon"></span>
+          <span>{{ item.label }}</span>
+        </li>
+         <li nz-menu-item (click)="handleLogout()">
+            <span nz-icon nzType="logout"></span>
+            <span>Logout</span>
+         </li>
+      </ul>
+    </nz-sider>
+    <nz-layout>
+      <nz-header>
+        <div class="app-header">
+          <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+              <span nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></span>
+          </span>
+          <div class="header-right">
+            <ul class="header-controls">
+              <li>
+                <nz-badge [nzCount]="5" [nzOverflowCount]="99" class="notification-badge" (click)="navigateToNotifications()"> <span nz-icon nzType="bell" nzTheme="outline" class="header-icon"></span>
+                </nz-badge>
+              </li>
+              <li>
+                <nz-dropdown nzPlacement="bottomRight">
+                  <div class="avatar-container" nz-dropdown>
+                    <nz-avatar nzIcon="user" nzSize="small" class="header-avatar"></nz-avatar>
+                    <span class="user-name" *ngIf="currentUser$ | async as user">{{ user?.name }}</span>
+                  </div>
+                  <ul nz-menu nzSelectable>
+                    <li nz-menu-item routerLink="/profile"> <span nz-icon nzType="user" nzTheme="outline"></span> Profile
+                    </li>
+                    <li nz-menu-divider></li>
+                    <li nz-menu-item (click)="handleLogout()">
+                      <span nz-icon nzType="logout" nzTheme="outline"></span> Logout
+                    </li>
+                  </ul>
+                </nz-dropdown>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nz-header>
+      <nz-content>
+        <div class="inner-content">
+           <nz-spin [nzSpinning]="isLoadingUser" nzTip="Loading...">
+              <router-outlet *ngIf="!isLoadingUser"></router-outlet>
+           </nz-spin>
+        </div>
+      </nz-content>
+       </nz-layout>
+  </nz-layout>

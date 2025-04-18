@@ -1,1 +1,71 @@
-<p>book-appointment works!</p>
+<h2>Book Appointment</h2>
+
+<nz-spin [nzSpinning]="isLoadingDoctor">
+  <nz-card *ngIf="doctor" [nzTitle]="'Appointment with Dr. ' + doctor.firstName + ' ' + doctor.lastName">
+     <nz-descriptions nzBordered [nzColumn]="{ xs: 1, sm: 2, md: 2 }">
+        <nz-descriptions-item nzTitle="Specialization">{{ doctor.specialization }}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Experience">{{ doctor.experience }}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Fee">{{ doctor.consultationFee | currency:'INR':'symbol':'1.0-0' }}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Address">{{ doctor.address }}</nz-descriptions-item>
+        </nz-descriptions>
+
+     <h3 class="mt-3">Select Date and Time</h3>
+     <form nz-form [formGroup]="bookingForm" (ngSubmit)="submitBooking()">
+        <nz-row [nzGutter]="16">
+           <nz-col [nzSpan]="12">
+              <nz-form-item>
+                 <nz-form-label nzRequired>Date</nz-form-label>
+                 <nz-form-control nzErrorTip="Please select a date">
+                    <nz-date-picker
+                       formControlName="appointmentDate"
+                       nzFormat="dd-MM-yyyy"
+                       [nzDisabledDate]="disabledDate"
+                       style="width: 100%;">
+                     </nz-date-picker>
+                 </nz-form-control>
+              </nz-form-item>
+           </nz-col>
+            <nz-col [nzSpan]="12">
+              <nz-form-item>
+                 <nz-form-label nzRequired>Time</nz-form-label>
+                 <nz-form-control nzErrorTip="Please select a time">
+                     <nz-time-picker
+                        formControlName="appointmentTime"
+                        nzFormat="HH:mm"
+                        [nzMinuteStep]="15"
+                        style="width: 100%;">
+                     </nz-time-picker>
+                 </nz-form-control>
+              </nz-form-item>
+           </nz-col>
+        </nz-row>
+
+         <div *ngIf="isCheckingAvailability" class="availability-check">
+            <nz-spin nzSimple [nzSize]="'small'"></nz-spin> Checking availability...
+         </div>
+         <nz-alert
+            *ngIf="availabilityMessage && !isCheckingAvailability"
+            [nzType]="isAvailable ? 'success' : 'error'"
+            [nzMessage]="availabilityMessage"
+            nzShowIcon
+            class="availability-alert">
+          </nz-alert>
+
+        <nz-form-item class="mt-3">
+           <nz-form-control>
+              <button
+                 nz-button
+                 nzType="primary"
+                 [disabled]="bookingForm.invalid || !isAvailable || isSubmitting || isCheckingAvailability"
+                 [nzLoading]="isSubmitting">
+                 Book Appointment
+               </button>
+           </nz-form-control>
+        </nz-form-item>
+
+     </form>
+  </nz-card>
+   <div *ngIf="!doctor && !isLoadingDoctor">
+      Could not load doctor information.
+   </div>
+</nz-spin>

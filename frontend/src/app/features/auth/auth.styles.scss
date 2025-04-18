@@ -1,0 +1,48 @@
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; // Adjust as needed
+    padding: 20px;
+  }
+  
+  .auth-form {
+    max-width: 400px;
+    width: 100%;
+    padding: 30px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+  }
+  
+  .login-form-button { // Reuse class name for consistency
+    width: 100%;
+  }
+  
+  .login-form-margin {
+    margin-bottom: 16px;
+  }
+  
+  .login-form-forgot {
+    float: right;
+  }
+  
+  .error-alert {
+     margin-top: 16px;
+  }
+  
+  /* Responsive adjustments if needed */
+  @media (max-width: 500px) {
+    .auth-form {
+      padding: 20px;
+      border: none;
+      box-shadow: none;
+    }
+  }

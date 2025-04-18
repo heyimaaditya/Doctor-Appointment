@@ -1,24 +1,25 @@
-import { Injectable, Inject } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar'; // Assuming you're using Material Snackbar for notifications
+import { Injectable, inject } from '@angular/core';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
-
-  constructor(@Inject(MatSnackBar) private snackBar: MatSnackBar) {}
-
-  showError(message: string): void {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000, // Duration for the notification in ms
-      panelClass: ['error-snackbar'] // Optional: custom class for styling
-    });
-  }
+  private message = inject(NzMessageService);
 
   showSuccess(message: string): void {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000, // Duration for the notification in ms
-      panelClass: ['success-snackbar'] // Optional: custom class for styling
-    });
+    this.message.success(message);
+  }
+
+  showError(message: string): void {
+    this.message.error(message);
+  }
+
+  showWarning(message: string): void {
+    this.message.warning(message);
+  }
+
+  showInfo(message: string): void {
+    this.message.info(message);
   }
 }
